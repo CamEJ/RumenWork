@@ -34,6 +34,20 @@ Avs <- dataS %>%
 # make a new column where you divide peak area by 1 % methane value you got in line 21
 
 Avs$CH4 <- with(Avs, pk_m/pc1)
+Avs$CH4_sd <- with(Avs, pk_sd/pc1)
 
-# then read this out.  
+
+# plotting
+library(ggplot2)
+library("wesanderson")
+
+
+plot <- ggplot(Avs, aes(x=ID, y=CH4, fill=Tmt), show_guide=FALSE) +
+  geom_bar(position="dodge",stat="identity") +
+  geom_errorbar(aes(ymin=CH4-CH4_sd, ymax=CH4+CH4_sd), width=.1) + 
+  scale_fill_manual(values = wes_palette("Darjeeling")) +
+  theme_bw() + labs(y="Percentage Methane", fill="Treatment") +
+  theme(axis.title.x = element_blank())
+
+plot
 
