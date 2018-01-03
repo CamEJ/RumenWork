@@ -1,0 +1,39 @@
+
+# methane GC data
+
+# read in data
+
+data = read.table('batch1_Ch4.txt', header=T, sep='\t')
+sapply(data, class)
+
+
+# subset out standards 
+
+stan = data[grep("Stnd", data$Contents),]
+#check cols are numeric
+sapply(stan, class)
+# convert column with percentage methane value into numeric. 
+stan$tmt = as.numeric(as.character(stan$tmt))
+
+# make a new column with answer when you divide peak area by % methane
+stan$OnePercent <- with(stan, Peak.area/tmt)
+
+pc1 = mean(stan[["OnePercent"]])
+
+# trim standards out of dataset by putting minus in front of grep
+
+dataS = data[-grep("Stnd", data$Contents),]
+
+# average technical replicates by grouping by ID
+Avs <- dataS %>% 
+  group_by(ID) %>% # in the order you want them grouped
+  summarise(pk_m = mean(Peak.area), 
+            pk_sd = sd(Peak.area),
+            Tmt= first(tmt)) # include row for tmt for plotting later 
+
+# make a new column where you divide peak area by 1 % methane value you got in line 21
+
+Avs$CH4 <- with(Avs, pk_m/pc1)
+
+# then read this out.  
+
