@@ -1,0 +1,38 @@
+
+# Vial pressure data
+
+setwd("~/Google Drive/Data/R")
+library(dplyr)
+library(ggplot2)
+
+
+# read in data
+
+data = read.table('batch1_pressureData.txt', header=T, sep='\t')
+sapply(data, class) # see what class your variables are
+
+# group by timepoint and treatment then get average and variance
+# of these bio reps to do line plot
+
+# average technical replicates by grouping by ID
+Avs <- data %>% 
+  group_by(timePoint, tmt) %>% # in the order you want them grouped
+  summarise(pr_m = mean(pressure), 
+            pr_sd = sd(pressure),
+            minit = first(mins))
+
+# plotting
+library("wesanderson")
+
+
+plot <- ggplot(Avs, aes(x=minit, y=pr_m, colour=tmt)) +
+  geom_line() +
+  geom_point(size=4, shape=21) +
+  ## add error bars
+  geom_errorbar(aes(ymin=pr_m-pr_sd, ymax=pr_m+pr_sd), width=.25) +
+  scale_colour_manual(values = wes_palette("Darjeeling")) +
+  theme_bw() + labs(y="Pressure", colour="Treatment", x = "Time (minutes)") +
+  theme(text = element_text(size=14, color = "black"))
+
+plot
+
