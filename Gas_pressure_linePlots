@@ -21,18 +21,23 @@ Avs <- data %>%
             pr_sd = sd(pressure),
             minit = first(mins))
 
+# run setFactorOrder.R
+Avs[["tmt"]] <- setFactorOrder(Avs[["tmt"]], c("N2:CO2", "H2:CO2-Am", "H2:CO2+Am"))
+
 # plotting
 library("wesanderson")
+names(wes_palettes)
 
 
 plot <- ggplot(Avs, aes(x=minit, y=pr_m, colour=tmt)) +
-  geom_line() +
+  geom_line(size=1) +
   geom_point(size=4, shape=21) +
   ## add error bars
-  geom_errorbar(aes(ymin=pr_m-pr_sd, ymax=pr_m+pr_sd), width=.25) +
+  geom_errorbar(aes(ymin=pr_m-pr_sd, ymax=pr_m+pr_sd), width=.5) +
   scale_colour_manual(values = wes_palette("Darjeeling")) +
-  theme_bw() + labs(y="Pressure", colour="Treatment", x = "Time (minutes)") +
-  theme(text = element_text(size=14, color = "black"))
+  theme_bw() + labs(y="Pressure", colour="   Treatment\n", x = "Time (minutes)") +
+  theme(text = element_text(size=20, color = "black"))
 
 plot
 
+# Batch1_20Dec17_pressureData.tiff
