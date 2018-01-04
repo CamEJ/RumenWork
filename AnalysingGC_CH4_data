@@ -36,6 +36,10 @@ Avs <- dataS %>%
 Avs$CH4 <- with(Avs, pk_m/pc1)
 Avs$CH4_sd <- with(Avs, pk_sd/pc1)
 
+# run setFactorOrder.R
+
+Avs[["Tmt"]] <- setFactorOrder(Avs[["Tmt"]], c("N2:CO2", "H2:CO2", "H2:CO2-Am"))
+
 
 # plotting
 library(ggplot2)
@@ -45,9 +49,10 @@ library("wesanderson")
 plot <- ggplot(Avs, aes(x=ID, y=CH4, fill=Tmt), show_guide=FALSE) +
   geom_bar(position="dodge",stat="identity") +
   geom_errorbar(aes(ymin=CH4-CH4_sd, ymax=CH4+CH4_sd), width=.1) + 
-  scale_fill_manual(values = wes_palette("Darjeeling")) +
+  scale_fill_manual(values = wes_palette("Darjeeling"),labels = c("N2:CO2","H2:CO2-Am", "H2:CO2+Am")) +
   theme_bw() + labs(y="Percentage Methane", fill="Treatment") +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank(),
+        text = element_text(size=20, color = "black")
+  )
 
-plot
 
