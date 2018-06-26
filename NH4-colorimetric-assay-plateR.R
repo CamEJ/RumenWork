@@ -1,19 +1,25 @@
 
-# EXP18-018 NH4 data
+## Analysing NH4 data aquired from colorimetric assays
+## on 48 well plates
+## using Bollman et al (2011) NH4 assay or Merkc ammonium kit transferred to plate
 
+# example data here is rumen work EXP18-018 NH4 data
+
+# load plateR package for reading in 48/96 well plate data and 
+# putting into R format
 library(plater)
 
 setwd("~/Google Drive/Data & reports/R/EXP18-018/NH4/")
 
-DataPlate = read_plate("EXP18-018_BsCs.csv", well_ids_column = "Wells")
-TmtPlate = read_plate("EXP18-018_BsCs_key.csv", well_ids_column = "Wells")
+DataPlate = read_plate("EXP18-018_BsCs.csv", well_ids_column = "Wells") # a csv file containing OD data only
+TmtPlate = read_plate("EXP18-018_BsCs_key.csv", well_ids_column = "Wells") # a csv file containing sample Ids of each well
 
-data = merge(DataPlate, TmtPlate, by = "Wells")
-colnames(data)[2] <- "OD"
-colnames(data)[3] <- "ID"
+data = merge(DataPlate, TmtPlate, by = "Wells") # merge the two plates 
+colnames(data)[2] <- "OD" # rename column 2 to OD
+colnames(data)[3] <- "ID" # rename column 3 to ID
 
 
-blank = data[grep("blank", data$ID), ]
+blank = data[grep("blank", data$ID), ] # get out your blank and see what av blank is
 # av blank = 0.07
 
 # new data set w/o blanks
